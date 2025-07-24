@@ -2,20 +2,20 @@ let firstOperand = null;
 let currentOperation = null;
 let waitingForOperand = false;
 
-
-function addition(a, b) {
+// Basic arithmetic operations
+function add(a, b) {
   return a + b;
 }
 
-function subtraction(a, b) {
+function subtract(a, b) {
   return a - b;
 }
 
-function multiplication(a, b) {
+function multiply(a, b) {
   return a * b;
 }
 
-function division(a, b) {
+function divide(a, b) {
   if (b === 0) {
     throw new Error("Division by zero is not allowed.");
   }
@@ -30,19 +30,23 @@ function squareRoot(a) {
 }
 
 function modulus(a, b) {
-    return a % b;
+  if (b === 0) {
+    throw new Error("Modulus by zero is not allowed.");
+  }
+  return a % b;
 }
 
-function operate(operation, a, b) {
+// Main operation dispatcher
+function operate(operation, a, b = null) {
   switch (operation) {
-    case 'addition':
-      return addition(a, b);
-    case 'subtraction':
-      return subtraction(a, b);
-    case 'multiplication':
-      return multiplication(a, b);
-    case 'division':
-      return division(a, b);
+    case 'add':
+      return add(a, b);
+    case 'subtract':
+      return subtract(a, b);
+    case 'multiply':
+      return multiply(a, b);
+    case 'divide':
+      return divide(a, b);
     case 'squareRoot':
       return squareRoot(a);
     case 'modulus':
@@ -50,33 +54,13 @@ function operate(operation, a, b) {
     default:
       throw new Error("Invalid operation");
   }
-} 
-
-function calculateResult() {
-  const firstDisplayValue = document.getElementById('display').value;
-  const secondDisplayValue = document.getElementById('display').value; // Assuming you want to use the same value for both operands
-
-  console.log("Calculating result for:", firstDisplayValue);
-  clearDisplay();
-  let result = operate('addition', parseFloat(firstDisplayValue), parseFloat(secondDisplayValue));
-  appendToDisplay(result);
-
 }
 
-function setOperation(operation) {
+// Display management functions
+function updateDisplay(value) {
   const display = document.getElementById('display');
-  
-  if (firstOperand === null) {
-    firstOperand = parseFloat(display.value);
-  } else if (currentOperation) {
-    const secondOperand = parseFloat(display.value);
-    const result = operate(currentOperation, firstOperand, secondOperand);
-    display.value = result;
-    firstOperand = result;
-  }
-  
-  waitingForOperand = true;
-  currentOperation = operation;
+  display.value = value;
+  saveToLocalStorage(value);
 }
 
 function appendToDisplay(value) {
@@ -89,7 +73,46 @@ function appendToDisplay(value) {
     display.value += value;
   }
   
-  saveValue();
+  saveToLocalStorage(display.value);
+}
+
+function clearDisplay() {
+  updateDisplay('');
+  resetCalculatorState();
+}
+
+function deleteLastCharacter() {
+  const display = document.getElementById('display');
+  display.value = display.value.slice(0, -1);
+  
+  if (display.value === '') {
+    resetCalculatorState();
+  }
+  
+  saveToLocalStorage(display.value);
+}
+
+// Calculator state management
+function resetCalculatorState() {
+  firstOperand = null;
+  currentOperation = null;
+  waitingForOperand = false;
+}
+
+function setOperation(operation) {
+  const display = document.getElementById('display');
+  const currentValue = parseFloat(display.value);
+  
+  if (firstOperand === null) {
+    firstOperand = currentValue;
+  } else if (currentOperation && !waitingForOperand) {
+    const result = operate(currentOperation, firstOperand, currentValue);
+    updateDisplay(result);
+    firstOperand = result;
+  }
+  
+  waitingForOperand = true;
+  currentOperation = operation;
 }
 
 function calculateResult() {
@@ -97,38 +120,33 @@ function calculateResult() {
   const secondOperand = parseFloat(display.value);
   
   if (firstOperand !== null && currentOperation) {
-    console.log("Calculating result for:", firstOperand, currentOperation, secondOperand);
+    console.log("Calculating:", firstOperand, currentOperation, secondOperand);
     
-    let result = operate(currentOperation, firstOperand, secondOperand);
-    display.value = result;
-    
-    // Reset calculator state
-    firstOperand = null;
-    currentOperation = null;
-    waitingForOperand = true;
-    
-    saveValue();
+    try {
+      const result = operate(currentOperation, firstOperand, secondOperand);
+      updateDisplay(result);
+      resetCalculatorState();
+      waitingForOperand = true;
+    } catch (error) {
+      updateDisplay("Error");
+      resetCalculatorState();
+    }
   }
 }
 
-function clearDisplay() {
-  const display = document.getElementById('display');
-  display.value = '';
-  
-  // Reset calculator state
-  firstOperand = null;
-  currentOperation = null;
-  waitingForOperand = false;
+// Local storage functions
+function saveToLocalStorage(value) {
+  localStorage.setItem('calculatorValue', value);
 }
 
-function deleteLastCharacter() {
-  const display = document.getElementById('display');
-  display.value = display.value.slice(0, -1);
-  
-  // If the display is empty, reset calculator state
-  if (display.value === '') {
-    firstOperand = null;
-    currentOperation = null;
-    waitingForOperand = false;
+function loadFromLocalStorage() {
+  const savedValue = localStorage.getItem('calculatorValue');
+  if (savedValue) {
+    updateDisplay(savedValue);
   }
-} 
+}
+
+// Initialize calculator on page load
+document.addEventListener('DOMContentLoaded', function() {
+  loadFromLocalStorage();
+});

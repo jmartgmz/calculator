@@ -12,7 +12,7 @@
     </header>
     <div class="calculator-frame">
       <div class="calculator">
-        <input type="text" id="display" value="" />
+        <input type="text" id="display" value="" readonly />
         <div class="buttons">
           <!-- Row 1: Function buttons -->
           <button class="btn-modulus" onclick="setOperation('modulus')">%</button>
@@ -21,28 +21,28 @@
           <button class="btn-delete" onclick="deleteLastCharacter()">DEL</button>
 
           <!-- Row 2: Numbers 7-9 and subtract -->
-          <button onclick="appendToDisplay('7').handleNumberInput('7')">7</button>
-          <button onclick="appendToDisplay('8').handleNumberInput('8')">8</button>
-          <button onclick="appendToDisplay('9').handleNumberInput('9')">9</button>
-          <button class="btn-subtract" onclick="setOperation('subtraction')">-</button>
+          <button onclick="appendToDisplay('7')">7</button>
+          <button onclick="appendToDisplay('8')">8</button>
+          <button onclick="appendToDisplay('9')">9</button>
+          <button class="btn-subtract" onclick="setOperation('subtract')">-</button>
 
           <!-- Row 3: Numbers 4-6 and divide -->
           <button onclick="appendToDisplay('4')">4</button>
           <button onclick="appendToDisplay('5')">5</button>
           <button onclick="appendToDisplay('6')">6</button>
-          <button class="btn-divide" onclick="setOperation('division')">÷</button>
+          <button class="btn-divide" onclick="setOperation('divide')">÷</button>
 
           <!-- Row 4: Numbers 1-3 and multiply -->
           <button onclick="appendToDisplay('1')">1</button>
           <button onclick="appendToDisplay('2')">2</button>
           <button onclick="appendToDisplay('3')">3</button>
-          <button class="btn-multiply" onclick="setOperation('multiplication')">×</button>
+          <button class="btn-multiply" onclick="setOperation('multiply')">×</button>
 
           <!-- Row 5: Special buttons and add -->
           <button onclick="appendToDisplay('.')">.</button>
           <button onclick="appendToDisplay('0')">0</button>
           <button onclick="calculateResult()">=</button>
-          <button class="btn-add" onclick="setOperation('addition')">+</button>
+          <button class="btn-add" onclick="setOperation('add')">+</button>
         </div>
       </div>
     </div>
