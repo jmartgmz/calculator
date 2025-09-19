@@ -2,6 +2,8 @@
 
 A modern, responsive calculator built with HTML, CSS, and JavaScript featuring a sleek circular button design and intuitive user interface.
 
+![Calculator Demo](https://raw.githubusercontent.com/jmartgmz/calculator/main/images/calculator-demo.png)
+
 ## Features
 
 - **Basic Operations**: Addition, subtraction, multiplication, and division
